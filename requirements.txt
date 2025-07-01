@@ -1,0 +1,8 @@
+pandas 
+numpy==1.24.0
+scikit-learn==1.2.2
+google-cloud-storage
+pyyaml
+matplotlib
+seaborn
+imbalanced-learn==0.10.1

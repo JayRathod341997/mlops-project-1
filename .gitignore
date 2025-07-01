@@ -1,0 +1,11 @@
+venv
+MLOPS_PROJECT_1.egg-info
+*.log
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.ipynb_checkpoints
+*.env
