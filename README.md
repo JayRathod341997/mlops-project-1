@@ -10,3 +10,4 @@ install google cli
 
 python -m src.data_ingestion
 
+ mlflow ui
