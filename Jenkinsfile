@@ -36,13 +36,13 @@ pipeline {
                             echo 'Building and Pushing Docker Image to GCR.............'
                             sh """
                                 # Ensure gcloud is in PATH (if not already set globally)
-                                export PATH=\$PATH:/usr/local/gcloud/google-cloud-sdk/bin
+                                export PATH=$PATH:${GCLOUD_PATH}
 
                                 # Authenticate with GCP
-                                gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS} --quiet
+                                gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}
 
                                 # Set the GCP project
-                                gcloud config set project ${GCP_PROJECT} --quiet
+                                gcloud config set project ${GCP_PROJECT}
 
                                 # Configure Docker to use GCR
                                 gcloud auth configure-docker gcr.io --quiet
