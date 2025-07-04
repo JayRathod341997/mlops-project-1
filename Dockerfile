@@ -1,37 +1,30 @@
-# Use an official Python runtime as a parent image
-FROM python:3.11-slim
+# Use a lightweight Python image
+FROM python:slim
 
-# Set environment variables
+# Set environment variables to prevent Python from writing .pyc files & Ensure Python output is not buffered
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    VENV_PATH=/opt/venv
+    PYTHONUNBUFFERED=1
 
-# Install system dependencies (LightGBM + build essentials)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgomp1 build-essential \
-    && rm -rf /var/lib/apt/lists/*
-
-# Create and activate virtual environment
-RUN python -m venv $VENV_PATH
-ENV PATH="$VENV_PATH/bin:$PATH"
-
-# Set working directory
+# Set the working directory
 WORKDIR /app
 
-# Copy requirements first to leverage Docker cache
-# COPY pyproject.toml .
-# COPY setup.cfg .
-# COPY setup.py .
+# Install system dependencies required by LightGBM
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgomp1 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install project in editable mode with pip
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -e .
-
-# Copy remaining project files
+# Copy the application code
 COPY . .
 
-# Expose port (optional - better to specify in run command)
+# Install the package in editable mode
+RUN pip install --no-cache-dir -e .
+
+# Train the model before running the application
+RUN python pipeline/training_pipeline.py
+
+# Expose the port that Flask will run on
 EXPOSE 5000
 
-# Run application (consider using gunicorn for production)
+# Command to run the app
 CMD ["python", "application.py"]
