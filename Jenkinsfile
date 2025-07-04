@@ -1,5 +1,10 @@
 pipeline {
-    agent any 
+    agent {
+        docker {
+            image 'python:3.11-slim'  # or your preferred version
+            args '-u root'  # Optional: Run as root if needed
+        }
+    }
 
     environment {
         VENV_DIR = 'venv'
@@ -15,27 +20,15 @@ pipeline {
             }
         }
         
-        stage('Install Python venv package') {
+        stage('Setup Virtual Environment') {
             steps {
                 script {
-                    echo 'Ensuring python3-venv is installed............'
+                    echo 'Setting up virtual environment...'
                     sh '''
-                    sudo apt-get update
-                    sudo apt-get install -y python3-venv
-                    '''
-                }
-            }
-        }
-        
-        stage('Setting up Virtual Environment and Installing dependencies') {
-            steps {
-                script {
-                    echo 'Setting up our Virtual Environment and Installing dependencies............'
-                    sh '''
-                    python3 -m venv ${VENV_DIR}
-                    . ${VENV_DIR}/bin/activate
-                    pip install --upgrade pip
-                    pip install -e .
+                        python -m venv ${VENV_DIR}
+                        . ${VENV_DIR}/bin/activate
+                        pip install --upgrade pip
+                        pip install -e .
                     '''
                 }
             }
