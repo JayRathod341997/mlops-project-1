@@ -19,9 +19,9 @@ ENV PATH="$VENV_PATH/bin:$PATH"
 WORKDIR /app
 
 # Copy requirements first to leverage Docker cache
-COPY pyproject.toml .
-COPY setup.cfg .
-COPY setup.py .
+# COPY pyproject.toml .
+# COPY setup.cfg .
+# COPY setup.py .
 
 # Install project in editable mode with pip
 RUN pip install --upgrade pip && \
