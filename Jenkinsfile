@@ -1,8 +1,8 @@
 pipeline {
     agent {
         docker {
-            image 'python:3.11-slim'  # or your preferred version
-            args '-u root'  # Optional: Run as root if needed
+            image 'python:3.11-slim' 
+            args '-u root'  
         }
     }
 
@@ -19,7 +19,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Setup Virtual Environment') {
             steps {
                 script {
