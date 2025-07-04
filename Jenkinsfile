@@ -20,7 +20,8 @@ pipeline {
                 script {
                     echo 'Setting up virtual environment...'
                     sh '''
-                        python -m venv ${VENV_DIR}
+                        pip install virtualenv
+                        virtualenv ${VENV_DIR}
                         . ${VENV_DIR}/bin/activate
                         pip install --upgrade pip
                         pip install -e .
