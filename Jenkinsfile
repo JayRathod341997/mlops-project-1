@@ -14,18 +14,24 @@ pipeline {
                 }
             }
         }
-
         stage('Setup Virtual Environment') {
             steps {
-                script {
-                    echo 'Setting up virtual environment...'
-                    sh '''
-                        python3 -m venv ${VENV_DIR} || rm -rf ${VENV_DIR} && python3 -m venv ${VENV_DIR}
-                        . ${VENV_DIR}/bin/activate
-                        pip install --upgrade pip
-                        pip install -e .
-                    '''
-                }
+                sh """
+                    # Create venv (force re-create if broken)
+                    python3 -m venv $VENV_DIR || rm -rf $VENV_DIR && python3 -m venv $VENV_DIR
+                    # Activate and install dependencies
+                    . $VENV_DIR/bin/activate
+                    pip install --upgrade pip
+                    pip install -e .
+                """
+            }
+        }
+        stage('Run Application') {
+            steps {
+                sh """
+                    . $VENV_DIR/bin/activate
+                    python application.py  # Or your main script
+                """
             }
         }
     }

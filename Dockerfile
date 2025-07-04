@@ -1,31 +1,37 @@
-# Use a lightweight official Python image
+# Use an official Python runtime as a parent image
 FROM python:3.11-slim
 
-# Environment variables
+# Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    VENV_PATH=/opt/venv
+
+# Install system dependencies (LightGBM + build essentials)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgomp1 build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create and activate virtual environment
+RUN python -m venv $VENV_PATH
+ENV PATH="$VENV_PATH/bin:$PATH"
 
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies (LightGBM, build essentials)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libgomp1 build-essential gcc \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# Copy requirements first to leverage Docker cache
+COPY pyproject.toml .
+COPY setup.cfg .
+COPY setup.py .
 
-# Copy project files
-COPY . .
-
-# Upgrade pip and install dependencies in editable mode
+# Install project in editable mode with pip
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -e .
 
-# Optional: Train model at build time (only if model is lightweight and always retrained)
-RUN python pipeline/training_pipeline.py
+# Copy remaining project files
+COPY . .
 
-# Expose Flask port
+# Expose port (optional - better to specify in run command)
 EXPOSE 5000
 
-# Run Flask app
+# Run application (consider using gunicorn for production)
 CMD ["python", "application.py"]
