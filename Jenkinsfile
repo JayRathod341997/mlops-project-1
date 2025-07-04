@@ -26,13 +26,5 @@ pipeline {
                 """
             }
         }
-        stage('Run Application') {
-            steps {
-                sh """
-                    . $VENV_DIR/bin/activate
-                    python application.py  # Or your main script
-                """
-            }
-        }
     }
 }
