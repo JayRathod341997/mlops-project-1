@@ -3,8 +3,6 @@ pipeline {
 
     environment {
         VENV_DIR = 'venv'
-        GCP_PROJECT ='mlops-project-1-464610'
-        GCLOUD_PATH = "/var/jenkins_home/google-cloud-sdk/bin"
     }
 
     stages {
@@ -28,7 +26,9 @@ pipeline {
                 """
             }
         }
-        stage('Building and Pushing Docker Image to GCR'){
+        
+    }
+    stage('Building and Pushing Docker Image to GCR'){
             steps{
                 withCredentials([file(credentialsId: 'gcp-key' , variable : 'GOOGLE_APPLICATION_CREDENTIALS')]){
                     script{
@@ -51,5 +51,5 @@ pipeline {
                     }
                 }
             }
-    }
+        }
 }
