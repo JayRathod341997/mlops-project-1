@@ -17,19 +17,6 @@ pipeline{
                 
             }
         }
-
-        stage('Install System Dependencies') {
-            steps {
-                script {
-                    echo 'Installing python3-venv...'
-                    sh '''
-                    apt-get update
-                    apt-get install -y python3-venv
-                    '''
-                }
-            }
-        }
-
         stage('Setting up our Virtual Environment and Installing dependencies') {
             steps{
                 script{
